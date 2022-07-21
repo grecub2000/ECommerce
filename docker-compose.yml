@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  ecommercedatabase:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        user: root
+        environment:
+            ACCEPT_EULA: "Y"
+            SA_PASSWORD: "Pass@word"
+            MSSQL_PID: Developer
+        container_name: ProductsMSSSQL
+        volumes:
+            - ECommerceDBData:/var/opt/mssql/data
+        ports:
+            - "1433:1433"
+  ecommerce:
+    build: ./ECommerce
+    depends_on:
+        - ecommercedatabase
+    environment:
+        ServerName: "ecommerceDatabase"
+        Database: "ECommerceDb"
+        UserName: "SA"
+        Password: "Pass@word"
+    ports:
+       - "80:80"
+       - "443:443"
+volumes:
+    ECommerceDBData:
+        name: ECommerceDBDataVolume
